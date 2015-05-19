@@ -13,11 +13,25 @@ then
 	mkdir "versions"
 fi
 
-OUTPUT_TAG="aggronerd/passenger-ruby:$1"
-sed "s/\!\!RUBY_VERSION\!\!/$1/g" Dockerfile > $DOCKERFILE_LOCATION
-docker build -f $DOCKERFILE_LOCATION -t $OUTPUT_TAG .
-
-if [ $? -eq 0 ] 
+if [ "$1" == "all" ]
 then
-	echo "\nSuccessfully built $OUTPUT_TAG"
-fi	
+	RUBIES=`cat RUBIES`
+else
+	RUBIES="$1"
+fi
+
+for VERSION in $RUBIES
+do
+	OUTPUT_TAG="aggronerd/passenger-ruby:$VERSION"
+	sed "s/\!\!RUBY_VERSION\!\!/$VERSION/g" Dockerfile > $DOCKERFILE_LOCATION
+	docker build -f $DOCKERFILE_LOCATION -t $OUTPUT_TAG .
+
+	if [ $? -eq 0 ] 
+	then
+		echo "\nSuccessfully built $OUTPUT_TAG"
+	else
+		echo "\nFailed to build $OUTPUT_TAG"
+		exit 1
+	fi	
+done
+	

@@ -21,21 +21,29 @@ ADD passenger.conf /etc/apache2/mods-available/passenger.conf
 RUN a2enmod rewrite
 RUN a2enmod passenger
 RUN a2enmod ssl
-ADD vhost.conf /etc/apache2/sites-available/app_http.conf
-ADD vhost_ssl.conf /etc/apache2/sites-available/app_https.conf
+ADD app_http.conf /etc/apache2/sites-available/app_http.conf
+ADD app_https.conf /etc/apache2/sites-available/app_https.conf
 RUN a2ensite app_http
-RUN a2ensite app_https
+
+# Setup folder for SSL certificates
+RUN mkdir -p /opt/ssl
+RUN chown -R www-data:www-data /opt/ssl
+RUN chmod -R 700 /opt/ssl
+
+# Setup entrypoint
+RUN mkdir -p /opt/docker
+ADD entrypoint.sh /opt/docker/entrypoint.sh
+RUN chmod +x /opt/docker/entrypoint.sh
 
 ENV SSL_CERT_FILE=/opt/ssl/cert
 ENV SSL_CERT_KEY_FILE=/opt/ssl/cert_key
 ENV APP_HOME=/opt/app
 ENV RAILS_ENV=production
 
-ADD . $APP_HOME
-RUN mkdir -p $APP_HOME/tmp/cache
-RUN chown -R www-data:www-data $APP_HOME
+WORKDIR $APP_HOME
+RUN mkdir -p $APP_HOME
 
 RUN apt-get autoremove -y
 
 ONBUILD EXPOSE 80 443
-ONBUILD ENTRYPOINT ["bash", "bin/entrypoint.sh"]
+ONBUILD ENTRYPOINT ["/opt/docker/entrypoint.sh"]

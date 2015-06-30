@@ -46,4 +46,4 @@ RUN mkdir -p $APP_HOME
 RUN apt-get autoremove -y
 
 ONBUILD EXPOSE 80 443
-ONBUILD ENTRYPOINT ["/opt/docker/entrypoint.sh"]
+ONBUILD CMD ["/opt/docker/entrypoint.sh"]

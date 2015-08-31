@@ -37,6 +37,7 @@ RUN chmod +x /opt/docker/entrypoint.sh
 
 ENV SSL_CERT_FILE=/opt/ssl/cert
 ENV SSL_CERT_KEY_FILE=/opt/ssl/cert_key
+ENV SSL_CERT_CHAIN_FILE=""
 ENV APP_HOME=/opt/app
 ENV RAILS_ENV=production
 

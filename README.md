@@ -48,6 +48,15 @@ You can add a self signed config by adding the following to your Dockerfile
 	RUN chown -R www-data:www-data /opt/ssl
 	RUN chmod -R 700 /opt/ssl
 
+#### Adding certificate chain
+
+On top of being able to add private and public certificates you can add a chain file. In your Dockerfile adding the following.
+
+	# Before this step add the file to the container
+	ENV SSL_CERT_CHAIN_FILE="/opt/ssl/my_chain_file"
+
+It is recommended not to include private certificates in your container. You could use your own version of the entrypoint.sh script which fetches the appropiate certificates from a secure service then pass in the environmental variables before calling apache.
+
 ## Building
 
 Build for all the Ruby versions in RUBIES:

@@ -7,6 +7,7 @@ RUN apt-get install -y build-essential ssh-client libsqlite3-dev git libpq-dev a
 # Set up apache2
 RUN service apache2 stop
 RUN a2dissite 000-default
+ENV APACHE_ARGS="-D FOREGROUND"
 
 # Install and build passenger extensions
 RUN gem install passenger
